@@ -181,4 +181,6 @@
 
 
 
-    
+9- import using @ 
+        we don't to have mention the enter path 
+        =>  import "@styles/globals.css";
