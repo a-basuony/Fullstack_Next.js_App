@@ -1,0 +1,184 @@
+=> npx create-next-app@latest ./  (./ =>is in the same directory)
+
+1- page.js => when going to ('./localhost:3000/')
+2- globals.css => global css for inter app
+
+3- components (server, client)
+        => by default is a server components
+        => turn them to a client component : add in top of the file "use client"
+                client component : when using hooks and events click
+
+        => use Server component by default until you need to use Client component
+
+        when to use (Server, Client) component
+        
+        1- Server component: 
+                1- fetch data
+                2- Access backend resources (directly)
+                3- Keep sensitive information on the server (access token , API keys)
+                4- keep large dependencies on the server (reduce client side js )
+
+        2- Client component: add in top of file 'use client'
+                1- Interactivity Events (onClick(), onChange()) 
+                2- hooks ,use State and Lifecycle Effects (useState(), useReducer(), useEffect())
+                3- browser-only api
+                4- Custom hooks
+                5- Class component
+
+4- Routing & Special Next.js files 
+
+        "localhost:3000/user"
+        => inside app folder add : user folder : page.js file
+        
+        "localhost:3000/user/new"
+        => inside app folder add : user folder : new folder : page.js file
+        
+       to make dynamic route :
+            - posts folder:   ("localhost:3000/posts" it will render pag.js)
+                    -[postId] folder:"localhost:3000/posts/post1" => it will render nested pag.js (this is dynamic route and will render page.js in every dynamic route )
+                            -page.js (post1, post2, post3, ...)
+                    -page.js 
+
+
+         In Next.js 14, routing continues to evolve, building upon the foundation laid in previous versions. Next.js uses a file system-based routing mechanism, which allows you to define routes by creating files and folders in the `pages` directory. Here’s how routing works in Next.js 14, including some new features and enhancements:
+
+            ### 1. File System-Based Routing
+            - **Pages Directory**: All routes in Next.js are determined by the files and folders in the `pages` directory. Each file or folder corresponds to a URL path.
+            - **Dynamic Routes**: You can create dynamic routes by using square brackets `[...]` in folder names or file names. For example, `[id].js` can match `/id` where `id` can be any string.
+
+            ### 2. Nested Routes
+            - **Folders**: Nested folders in the `pages` directory create nested routes. For example, a folder structure like `pages/blog/post/[id].js` will create a route like `/blog/post/123`.
+            - **Catch-all Routes**: You can use double square brackets `[[...slug]]` to create catch-all routes that match any number of segments, not just one. For example, `pages/blog/[[...slug]].js` can match `/blog/a`, `/blog/a/b`, `/blog/a/b/c`, etc.
+
+            ### 3. Route Handlers
+            - **JavaScript and TypeScript**: Next.js 14 supports both `.js` and `.tsx` files for route handlers, allowing you to use TypeScript for type checking and component definition.
+            - **Layouts**: Next.js 14 introduces layouts, which can be defined in a `_app.tsx` or `_app.js` file at the root of the `pages` directory, or in a `_layout.tsx` or `_layout.js` file within a nested route.
+                 Layouts wrap individual pages and can be used to share common page elements like headers, footers, and sidebars.
+
+           
+
+
+5- Data Fetching (SSR, SSG, ISR)
+
+    1. Server Side Rendering (SSR)
+    2. Static Site Generation (SSG)
+    3. Incremental Static Generation (ISG)
+
+            #### 1. Server Side Rendering (SSR)
+
+                        Server Side Rendering (SSR) is a method where a special function runs to fetch data from an API on every page request on the server-side. This happens before the page is loaded, creating a delay. After the function runs and fetches the data, the page is served to the user. 
+
+                        In SSR, when a user requests a web page, the Next.js server processes the request, fetches the data, and assembles the page on the server. A fully rendered webpage is then sent to the user. 
+
+                        Here's an example of how to use SSR in Next.js:
+
+                        ```jsx
+                        export async function getServerSideProps(context) {
+                        const res = await fetch(`https://.../data`)
+                        const data = await res.json()
+
+                        if (!data) {
+                            return {
+                            notFound: true,
+                            }
+                        }
+
+                        return {
+                            props: { data }, // will be passed to the page component as props
+                        }
+                        }
+                        ```
+                        In this example, `getServerSideProps` is an async function provided by Next.js that runs on every request. It fetches data from an API and passes it as props to the page component.
+
+            #### 2. Static Site Generation (SSG)
+
+                        Static Site Generation (SSG) is a method where a special function runs to fetch data once when the page builds. The page is then served statically from a CDN, and the output from the build is reused for each request. 
+
+                        SSG does all of its rendering before the user requests a page. Instead, it does it at build time and fully ready files are served from a CDN. 
+
+                        Here's an example of how to use SSG in Next.js:
+
+                        ```jsx
+                        export async function getStaticProps() {
+                        const res = await fetch(`https://.../data`)
+                        const data = await res.json()
+
+                        return {
+                            props: { data },
+                        }
+                        }
+                        ```
+                        In this example, `getStaticProps` is an async function provided by Next.js that runs at build time. It fetches data from an API and passes it as props to the page component.
+
+            #### 3. Incremental Static Generation (ISG)
+
+                        Incremental Static Regeneration (ISG) is a method that combines SSG and SSR. It serves pages statically, but at a certain time and under certain conditions, the page will rebuild and fetch the data from the API again. 
+
+                        ISG allows you to update static content instantly without needing a full rebuild of your site. It's a hybrid approach that's useful for e-commerce, marketing pages, blog posts, ad-backed media, and more. 
+
+                        Here's an example of how to use ISG in Next.js:
+
+                        ```jsx
+                        export async function getStaticProps() {
+                        const res = await fetch(`https://.../data`)
+                        const data = await res.json()
+
+                        return {
+                            props: { data },
+                            revalidate: 1, // In seconds
+                        }
+                        }
+                        ```
+                        In this example, `getStaticProps` is used just like in SSG, but with an additional `revalidate` property. This property specifies how often (in seconds) the data should be fetched again. If a request comes in during this time, the pre-rendered page is served, and in the background, the page is regenerated.
+
+
+6- backend with Next.js 
+
+    http://localhost:3000/api/users
+    in app folder : create a api folder : users folder: route.js file
+
+7- MetaData (static, dynamic)
+
+        1- static metadata
+                =>       export const metadata={       
+                            title: 'Home',
+                        }
+
+            //output: =>   <head> <title>Home</title></head>
+        
+                export default function Home(){
+                    return (
+                        <div>
+                            <h1>Home</h1>
+                        </div>
+                    )
+                }
+
+
+        2- dynamic metadata
+
+            1. => 
+                export async function generateMetadata({params}){
+                    const product = await getProduct(params.id)
+
+                    return{
+                        title: product.title
+                    }
+                } 
+
+            //output: => <head><title>My unique product name</title></head>
+
+              export default function Home(){
+                    return (
+                        <div>
+                            <h1>Home</h1>
+                        </div>
+                    )
+                }
+
+8- install 
+    npm install bcrypt mongodb mongoose next-auth
+
+
+
+    
