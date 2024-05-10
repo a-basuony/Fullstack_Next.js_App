@@ -5,7 +5,7 @@ export const metadata = {
   description: "Discover & Share API Prompts",
 };
 
-const RootLayout = () => {
+const RootLayout = ({ children }) => {
   return (
     <html lang="en">
       <body>
